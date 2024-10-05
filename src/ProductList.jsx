@@ -265,6 +265,20 @@ function ProductList() {
         e.preventDefault();
         setShowCart(false);
     };
+
+    const isAddedToCart = (item) => {
+
+        console.log(cart);
+        console.log(item);
+
+        const itemInCart = cart.find(cartItem => {
+            return cartItem.name === item.name;
+        });
+
+        return itemInCart ? true : false;
+
+    }
+
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -302,8 +316,8 @@ function ProductList() {
                                     <div className="product-card" key={plantIndex}>
                                         <img className="product-image" src={plant.image} alt={plant.name} />
                                         <div className="product-title">{plant.name}</div>
-                                        <button className="product-button" onClick={() => handleAddToCart(plant)}>
-                                            Add to Cart
+                                        <button className="product-button" disabled={isAddedToCart(plant)} onClick={() => handleAddToCart(plant)}>
+                                            {isAddedToCart(plant) ? 'Added to Cart' : 'Add to Cart' }
                                         </button>
                                     </div>
                                 ))}
