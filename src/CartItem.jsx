@@ -4,17 +4,20 @@ import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
+
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
-  console.log('cart', cart);
 
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
  
     let total = 0;
     cart.forEach(item => {
-        total = (item.quantity + item.cost);
+        console.log(item.cost, item.quantity);
+        let cost = parseInt(item.cost.replace('$', ''));
+        console.log(cost)
+        total = (item.quantity * cost) + total;
     });
     return total;
 
@@ -24,19 +27,34 @@ const CartItem = ({ onContinueShopping }) => {
     alert('Functionality to be added for future reference');
   };
 
+  const handleContinueShopping = (e) => {
+    console.log('continue shopping')
+    onContinueShopping(e);
+  }
+
   const handleIncrement = (item) => {
     const {name, quantity} = item;
-    dispatch({
-        type: 'updateQuantity',
-        payload: {
+    dispatch(
+        updateQuantity({
             ...item,
             name,
             quantity: quantity+1
-        } 
-    });
+        })
+    );
+    // dispatch({
+    //     type: 'updateQuantity',
+    //     payload: {
+    //         ...item,
+    //         name,
+    //         quantity: quantity+1
+    //     } 
+    // });
   };
 
   const handleDecrement = (item) => {
+
+    console.log('item', item);
+
     const {name, quantity} = item;
 
     let updatedQuantity = quantity-1;
@@ -44,26 +62,32 @@ const CartItem = ({ onContinueShopping }) => {
         updatedQuantity = 0;
     }
 
-    dispatch({
-        type: 'updateQuantity',
-        payload: {
+    console.log(updatedQuantity)
+
+    dispatch(
+        updateQuantity({
             ...item,
             name,
-            quantity: updateQuantity
-        } 
-    });
+            quantity: updatedQuantity
+        })
+    );
 
   };
 
   const handleRemove = (item) => {
-    dispatch({
-        type: 'removeItem',
-        payload: item 
-    })
+    dispatch(
+        removeItem(item.name)
+    );
+    // dispatch({
+    //     type: 'removeItem',
+    //     payload: item 
+    // })
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    const cost = parseInt(item.cost.replace('$', ''));
+    return cost * item.quantity;
   };
 
   return (
